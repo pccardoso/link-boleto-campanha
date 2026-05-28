@@ -265,3 +265,64 @@ exit
 clear
 php artisan key:generate
 exit
+ls
+php artisan migrate
+cls
+clear
+exit
+cls
+clear
+php artisan migrate
+exit
+php artisan optimize:clear
+php artisan config:clear
+php artisan optimize
+php artisan config:clear
+php artisan config:clear
+php artisan optimize:clear
+EXIT
+exit
+cl
+cls
+clear
+ls
+php artisan db:seed
+cls
+clear
+clear
+clear
+exit
+php artisan app:prepare-open-bills
+exi
+exit
+php -v
+composer require maatwebsite/excel
+exit
+ls
+clear
+php artisan migrate
+php artisan migrate
+exit
+php artisan db:seed
+cls
+clear
+php artisan app:import-excel-command
+cls
+clear
+php artisan app:import-excel-command
+php artisan app:import-excel-command
+php artisan app:import-excel-command
+cls
+clear
+php artisan app:import-excel-command
+php artisan app:import-excel-command
+php artisan app:import-excel-command
+php artisan app:import-excel-command
+php artisan app:import-excel-command
+exit
+cls
+clear
+php artisan app:prepare-open-bills
+php artisan app:sync-bills-status
+php artisan app:send-emails
+exit

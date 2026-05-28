@@ -219,6 +219,8 @@ import BoletoUpdatedModal from '@/components/BoletoUpdatedModal.vue';
 import LoadingBoleto from '@/components/LoadingBoleto.vue';
 import ModalUploadRash from '@/components/ModalUploadRash.vue';
 import Swal from 'sweetalert2';
+import { getAllAuthorized } from '@/api/authorized';
+import { getAllBill } from '@/api/bill';
 
 export default {
   name: "Home",
@@ -254,6 +256,9 @@ export default {
       nossoNumeroCurrent: 0,
       boletoCurrent: {},
       stateToken: "",
+      boletoEncontrato: {},
+      authorizedVehicles: [],
+      billList: []
     }
   },
 
@@ -332,6 +337,18 @@ export default {
           this.boletosCurrent = responseBoleto.data.data.data.filter(bol => bol.situacao_boleto === "ABERTO");
           this.stateToken = responseBoleto?.data?.data?.tokenState || '';
 
+          this.boletoEncontrato = responseBoleto?.data?.data?.boletCurrent || {};
+
+          if(Object.keys(this.boletoEncontrato).length) {
+
+            if(this.boletoEncontrato['0']?.descricao_situacao_boleto === "BAIXADO"){
+              window.location.href = 'https://evoboletos.mundoevogard.com/';
+            }else{
+              this.boletUpdateCurrent = this.boletoEncontrato;
+              this.showModalUpdate = true;
+            }
+          }
+
           if (!this.boletosCurrent.length) {
             Swal.fire({
               icon: 'info',
@@ -347,7 +364,9 @@ export default {
 
           if (responsePlate.status === 200) {
 
-            this.veiculos = responsePlate.data.data;
+            this.veiculos = responsePlate.data.data.map(item => {
+              return this.authorizedVehicles.includes(item.plate) ? item : null
+            }).filter(Boolean);
 
             if (responseBoleto.status === 200) {
 
@@ -369,6 +388,12 @@ export default {
           });
         }
 
+        if (error.status === 422) {
+          
+          window.location.href = 'https://evoboletos.mundoevogard.com/';
+
+        }
+
         console.log(error);
 
       } finally {
@@ -377,8 +402,24 @@ export default {
     },
 
     async actionSelectedPlate(vehicle) {
+
       this.boletosCurrent = this.boletos.filter(bol => Number(bol.veiculo[0].codigo_veiculo) === Number(vehicle.codigo_veiculo) && bol.situacao_boleto === "ABERTO");
       if (this.boletosCurrent) {
+
+        const validateBoletoGerado = this.billList.find(bol => bol.plate === vehicle.plate);
+
+        if (validateBoletoGerado) {
+
+          if(validateBoletoGerado.descricao_situacao_boleto === "BAIXADO"){
+            window.location.href = 'https://evoboletos.mundoevogard.com/';
+            return;
+          }
+
+          this.boletUpdateCurrent = {0: validateBoletoGerado};
+          this.showModalUpdate = true;
+          return;
+        }
+
         this.viewBoletos = true;
       }
     },
@@ -393,8 +434,6 @@ export default {
     },
 
     async updateBolet(bolet) {
-
-      console.log("Boleto para atualizar: ", {...bolet, state: this.stateToken});
 
       this.loadingUpdateBolet = true;
       try {
@@ -411,8 +450,6 @@ export default {
 
         }
 
-        console.log("Response update boleto: ", responseUpdateBolet);
-
       } catch (error) {
         console.log(error);
       } finally {
@@ -423,8 +460,6 @@ export default {
 
     openModalLink(bolet) {
 
-      console.log(bolet);
-
       this.plateHashCurrent =
         bolet?.veiculos?.[0]?.placa ||
         bolet?.veiculo?.[0]?.placa ||
@@ -434,14 +469,30 @@ export default {
 
       this.boletoCurrent = bolet;
 
-      console.log(bolet);
-
       this.nossoNumeroCurrent = Number(bolet.nosso_numero);
 
       this.showModalLink = true;
 
+    },
+
+    async getAllAuhtorize(){
+
+      const [responseAuthorized, responseBill] = await Promise.all([getAllAuthorized(), getAllBill()]);
+
+      if(responseAuthorized.status === 200){
+        this.authorizedVehicles = responseAuthorized.data.map(item => item.plate_number);
+      }
+
+      if(responseBill.status === 200){
+        this.billList = responseBill.data;
+      }
+
     }
 
+  },
+
+  async beforeMount() {
+    await this.getAllAuhtorize();
   }
 }
 </script>

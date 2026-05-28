@@ -8,6 +8,7 @@ use App\Http\Controllers\HashPlateController;
 use App\Http\Controllers\UploadHashController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\AuthorizedPlatesController;
 
 # ROTAS PÚBLICAS
 
@@ -21,6 +22,8 @@ Route::get('/search-plate/{cpfOrCnpj}', [SGAController::class, 'consultPlatesUse
 Route::post('/search-boleto-cpf/{cpfOrCnpj}', [SGAController::class, 'consultBoletUser']);
 Route::post('/search-boleto-plate/{plate}', [SGAController::class, 'consultBoletPlate']);
 Route::post('/alterar/vencimento-boleto', [SGAController::class, "updateBolet"]);
+Route::get('/authorized-plates', [AuthorizedPlatesController::class, 'index']);
+Route::get('/get-list-bill', [BillController::class, 'index']);
 
 Route::prefix('hash-plate')->group(function(){
 

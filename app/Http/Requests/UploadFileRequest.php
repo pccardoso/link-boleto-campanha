@@ -25,7 +25,6 @@ class UploadFileRequest extends FormRequest
             'moovie' => 'required|file|max:51200',
             'hash' => 'required|string',
             'plate' => 'required|string',
-            'nosso_numero' => 'required|integer',
             'boleto' => 'required|array',
             'state' => 'required|string'
         ];

@@ -296,8 +296,17 @@ export default {
         formData.append("state", this.state);
         
         Object.keys(this.boleto).forEach(key => {
-          formData.append(`boleto[${key}]`, this.boleto[key])
-        })
+            let value = this.boleto[key];
+
+            // Checa se o valor é um objeto/array e não é nulo
+            if (typeof value === 'object' && value !== null) {
+                // Transforma o array/objeto em uma string JSON válida
+                formData.append(`boleto[${key}]`, JSON.stringify(value));
+            } else {
+                // Se for string, número, ou booleano, envia direto
+                formData.append(`boleto[${key}]`, value);
+            }
+        });
 
         const response = await uploadMoovie(formData)
 
@@ -320,6 +329,8 @@ export default {
 
   beforeMount() {
     this.generateHash()
+
+    console.log("INFORMAÇÕES DO BOLETO: ", this.boleto);
   }
 
 }

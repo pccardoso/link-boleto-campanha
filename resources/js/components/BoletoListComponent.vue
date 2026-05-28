@@ -80,18 +80,18 @@
           <!-- Ações -->
           <div class="flex w-full md:w-auto">
 
-            <!-- Mais de 5 dias -->
-            <button v-if="daysLate(boleto.data_vencimento_original) > 5" @click="$emit('actionLinkSurvey', boleto)"
+            <!-- Todos os casos serão enviados vídeos -->
+            <button v-if="daysLate(boleto.data_vencimento_original) >= 0" @click="$emit('actionLinkSurvey', boleto)"
               class="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-3 md:py-2 rounded-lg transition-all shadow-md">
               <i class="fa-solid fa-camera mr-1"></i>
               Fazer Vistoria
             </button>
 
-            <!-- Até 5 dias -->
+            <!-- Removemos essa opção, pois todos nenhum boleto será atualizado, sempre será gerado um novo.
             <button v-else-if="daysLate(boleto.data_vencimento_original) <= 5" @click="atualizarBoleto(boleto)"
               class="w-full md:w-auto bg-(--evogard-orange) hover:bg-(--evogard-blue) text-white text-sm px-4 py-3 md:py-2 rounded-lg transition-all shadow-md">
               Atualizar boleto
-            </button>
+            </button>-->
 
           </div>
 

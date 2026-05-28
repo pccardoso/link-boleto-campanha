@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
-    container_name: boleto_app
+    container_name: boleto_app_campanha
     working_dir: /var/www
     volumes:
       - ./:/var/www
@@ -19,7 +19,7 @@ services:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
-    container_name: boleto_queue
+    container_name: boleto_queue_campanha
     working_dir: /var/www
     command: php artisan queue:work --tries=3 --timeout=60
     volumes:
@@ -34,7 +34,7 @@ services:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
-    container_name: boleto_scheduler
+    container_name: boleto_scheduler_campanha
     working_dir: /var/www
     command: php artisan schedule:work
     volumes:
@@ -46,10 +46,10 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: boleto_nginx
+    container_name: boleto_nginx_campanha
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.boleto.rule=Host(`boleto.localhost`)"
+      - "traefik.http.routers.boleto.rule=Host(`boleto.campanha.localhost`)"
       - "traefik.http.services.boleto.loadbalancer.server.port=80"
       - "traefik.docker.network=web"
     volumes:
@@ -63,14 +63,14 @@ services:
 
   pgsql:
     image: postgres:16
-    container_name: boleto_pgsql
+    container_name: boleto_pgsql_campanha
     restart: unless-stopped
     environment:
       POSTGRES_DB: laravel
       POSTGRES_USER: laravel
       POSTGRES_PASSWORD: secret
     ports:
-      - "5432:5432"
+      - "5435:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:

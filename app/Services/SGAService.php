@@ -6,6 +6,8 @@
     use Carbon\Carbon;
     use Illuminate\Support\Facades\Log;
     use App\Models\Bill;
+    use App\Models\AuthorizedPlates;
+    use Symfony\Component\HttpKernel\Exception\HttpException;
 
     class SGAService{
 
@@ -94,6 +96,20 @@
 
         public function listBoletoOfPlate($plateVehicle)
         {
+
+            $platAuthorized = AuthorizedPlates::where('plate_number', $plateVehicle)->first();
+
+            if(!$platAuthorized){
+                throw new HttpException(
+                    422,
+                    'Placa não autorizada para consulta de boletos.'
+                );
+            }
+
+            //verificar se há boletos já cadastrados
+
+            $boletCurrent = Bill::where('plate', $plateVehicle)->get();
+
             $hoje = \Carbon\Carbon::today();
 
             $tokens = [
@@ -116,7 +132,9 @@
                 if ($response->status() === 200 && $response->json()) {
                     return [
                         "tokenState" => $state,
-                        "data" => $response->json()
+                        "data" => $response->json(),
+                        "status" => 200,
+                        "boletCurrent" => $boletCurrent
                     ];
                 }
 
@@ -134,7 +152,10 @@
                 return $response->json();
             }
 
-            return [];
+            throw new HttpException(
+                404,
+                'Nenhum boleto encontrado para a placa informada.'
+            );
         }
 
         public function updateMaturity($codigoBolet, $state){
@@ -197,6 +218,104 @@
 
                 return response()->json([
                     'erro' => 'Não foi possível atualizar o boleto.'
+                ], 500);
+
+            }
+
+        }
+
+        public function generateBillet($payload, $state){
+
+            $veiculosJson = data_get($payload, 'veiculos') ?? data_get($payload, 'veiculo', '[]');
+
+            $veiculos = json_decode($veiculosJson, true);
+
+            Log::info('Iniciando processo de geração de boleto', [
+                'parametro' => $payload,
+                'state' => $state
+            ]);
+    
+            $hoje = \Carbon\Carbon::today()->format('d/m/Y');
+            $mesReferencia = \Carbon\Carbon::today()->format('m/Y');
+            $vencimentoBolet = \Carbon\Carbon::today()->format('d/m/Y');
+
+            try{
+
+                $place = AuthorizedPlates::where('plate_number', data_get($veiculos, '0.placa', 0))->first();
+
+                $tokenState = $state === "CE" ? env('TOKEN_SGA') : env('TOKEN_SGA_GO');
+            
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $tokenState,
+                    'Accept' => 'application/json'
+                ])->post('https://api.hinova.com.br/api/sga/v2/boleto/cadastrar', [
+                    "codigo_associado" => data_get($payload, 'codigo_associado', 0),
+                    "codigo_tipo_boleto" => 82,
+                    "codigo_conta" => 7,
+                    "link_boleto" => true,
+                    "codigo_situacao" => "2",
+                    "array_parcela" => [
+                        (object)[
+                            "valor" => $place->agreement_value,
+                            "vencimento" => $vencimentoBolet
+                        ]
+                    ],
+                    "mes_referente" => $mesReferencia,
+                    "data_emissao" => $hoje,
+                    "referencia" => [
+                        (object)[
+                            "modulo" => "veiculo",
+                            "codigo_modulo" => data_get($veiculos, '0.codigo_veiculo', 0),
+                        ]
+                    ]
+                    
+                ]);
+
+                Log::info('Resposta da API de geração de boleto', [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+
+                if($response->status() === 200){
+
+                    $bodyResponse = $response->json();
+
+                    $nossoNumero = $bodyResponse["0"]["nosso_numero"];
+                    $linhaDigitavel = $bodyResponse["0"]["linha_digitavel"];
+                    $linkBoleto = $bodyResponse["0"]["link_boleto"];
+
+                    Bill::updateOrCreate(
+                        [
+                            "nosso_numero" => $nossoNumero,
+                        ],
+                        [
+                            "codigo_boleto" => $nossoNumero,
+                            "nova_data_vencimento" => $vencimentoBolet,
+                            "cpf_cnpj" => data_get($payload, 'cpf', 'Não Identificado'),
+                            "associado" => data_get($payload, 'nome_associado', 'Não Identificado'),
+                            "linha_digitavel" => $linhaDigitavel,
+                            "link_boleto" => $linkBoleto,
+                            "valor_boleto" => $place->agreement_value,
+                            "plate" => data_get($veiculos, '0.placa', 0)
+                        ]
+                    );
+
+                    return $response->json();
+
+                }
+
+
+            }catch(\Exception $e){
+
+                Log::error('Erro ao gerar boleto', [
+                    'parametro' => $payload,
+                    'mensagem' => $e->getMessage(),
+                    'linha' => $e->getLine(),
+                    'arquivo' => $e->getFile(),
+                ]);
+
+                return response()->json([
+                    'erro' => 'Não foi possível gerar o boleto.'
                 ], 500);
 
             }

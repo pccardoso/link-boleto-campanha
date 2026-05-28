@@ -11,7 +11,7 @@
           <i class="w-10 h-10 text-center fa-solid fa-file-invoice-dollar text-(--evogard-orange) bg-(--evogard-orange-rgba) p-2 rounded-full text-xl"></i>
 
           <h2 class="text-lg font-semibold text-neutral-600">
-            Boleto atualizado
+            Boleto Emitido
           </h2>
         </div>
 
@@ -37,7 +37,7 @@
           <div class="mt-2 bg-gray-100 rounded-xl p-4 flex items-center justify-between gap-3">
 
             <span class="text-sm text-gray-700 break-all">
-              {{ boleto.linha_digitavel }}
+              {{ boleto['0'].linha_digitavel ? boleto['0'].linha_digitavel : boleto.linha_digitavel }}
             </span>
 
             <button
@@ -63,21 +63,21 @@
 
         </div>
 
-        <!-- Vencimento -->
+        <!-- Vencimento oculto
         <div class="flex items-center gap-3 text-gray-600">
 
           <i class="fa-regular fa-calendar text-(--evogard-orange)"></i>
 
           <span>
-            Vencimento: <b>{{ boleto.nova_data_vencimento }}</b>
+            Vencimento: <b>Teste</b>
           </span>
 
-        </div>
+        </div> -->
 
         <div class="flex flex-col space-y-2">
           <!-- Botão PDF -->
           <a
-            :href="boleto.link_boleto"
+            :href="boleto['0'].link_boleto ? boleto['0'].link_boleto : boleto.link_boleto"
             target="_blank"
             class="block w-full text-center bg-(--evogard-orange) hover:bg-(--evogard-blue) text-white font-semibold py-3 rounded-xl transition"
           >
@@ -118,7 +118,7 @@ export default {
   methods: {
     copyLine() {
 
-      navigator.clipboard.writeText(this.boleto.linha_digitavel)
+      navigator.clipboard.writeText(this.boleto['0'].linha_digitavel ? this.boleto['0'].linha_digitavel : this.boleto.linha_digitavel)
 
       this.copied = true
 

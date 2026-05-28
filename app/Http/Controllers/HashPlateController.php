@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreHashPlateRequest;
 use App\Http\Requests\UploadFileRequest;
+use App\Http\Requests\GenerateBoletRequest;
 use App\Services\HashPlateService;
 use App\Services\SGAService;
 use Illuminate\Support\Facades\Storage;
@@ -82,11 +83,38 @@ class HashPlateController extends Controller
 
     }
 
+    public function generateBillet(GenerateBoletRequest $request){
+
+        $billet = $this->sgaService->generateBillet($request->validated());
+
+        return response()->json([
+            "message" => "Boletos gerados com sucesso!",
+            "data" => $billet,
+            "status" => 200
+        ], 200);
+    }
+
     public function uploadMoovie(UploadFileRequest $request){
 
         $returnFileUpload = $this->hashService->uploadMovie($request->validated());
 
         if($returnFileUpload){
+
+            $boletGenerate = $this->sgaService->generateBillet($request->input('boleto'), $request->input('state'));
+
+            return response()->json([
+                "message" => "Vídeo da vistoria foi enviado com sucesso",
+                "data" => [
+                    "path_upload" => $returnFileUpload,
+                    "boleto" => $boletGenerate
+                ],
+                "status" => 200
+            ], 200);
+
+        }
+
+
+        /*if($returnFileUpload){
 
             $boletUpdate = $this->sgaService->updateMaturity($request->input('boleto'), $request->input('state'));
 
@@ -99,7 +127,7 @@ class HashPlateController extends Controller
                 "status" => 200
             ], 200);
 
-        }
+        }*/
 
     }
 
