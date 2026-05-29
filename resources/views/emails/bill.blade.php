@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Relatório de Boletos - {{ count($listBoletos) }} boleto(s)</title>
+    <title>Relatório de Boletos (Campanha) - {{ count($listBoletos) }} boleto(s)</title>
 </head>
 
 <body style="margin:0; padding:30px; background-color:#f4f6f8; font-family:Arial, Helvetica, sans-serif; color:#333;">
@@ -25,7 +25,7 @@
                     <td align="right" valign="middle">
                         <div>
                             <h1 style="margin:0; font-size:24px; color:#ffffff;">
-                                Relatório de Baixa de Boletos
+                                Relatório de Baixa de Boletos (Campanha)
                             </h1>
 
                             <p style="margin:8px 0 0; color:#d1d5db; font-size:14px;">

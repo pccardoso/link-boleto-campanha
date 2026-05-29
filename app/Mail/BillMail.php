@@ -30,7 +30,7 @@ class BillMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Relatório de Baixa de Boletos - ' . Carbon::now()->format('d/m/Y')
+            subject: 'Relatório de Baixa de Boletos (Campanha) - ' . Carbon::now()->format('d/m/Y')
         );
     }
 
