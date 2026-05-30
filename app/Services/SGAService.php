@@ -7,6 +7,7 @@
     use Illuminate\Support\Facades\Log;
     use App\Models\Bill;
     use App\Models\AuthorizedPlates;
+    use App\Models\HistoryPlate;
     use Symfony\Component\HttpKernel\Exception\HttpException;
 
     class SGAService{
@@ -109,6 +110,24 @@
             //verificar se há boletos já cadastrados
 
             $boletCurrent = Bill::where('plate', $plateVehicle)->get();
+
+            if($boletCurrent->count() > 0){
+            
+                if($boletCurrent[0]->descricao_situacao_boleto === "ABERTO"){
+                    HistoryPlate::create([
+                        "authorized_plate_id" => $platAuthorized->id,
+                        "status" => 1
+                    ]);
+                }
+
+                if($boletCurrent[0]->descricao_situacao_boleto === "BAIXADO"){
+                    HistoryPlate::create([
+                        "authorized_plate_id" => $platAuthorized->id,
+                        "status" => 2
+                    ]);
+                }
+
+            }
 
             $hoje = \Carbon\Carbon::today();
 

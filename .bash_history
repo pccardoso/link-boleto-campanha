@@ -326,3 +326,18 @@ php artisan app:prepare-open-bills
 php artisan app:sync-bills-status
 php artisan app:send-emails
 exit
+cls
+clear
+php artisan migrate
+cls
+clear
+php artisan migrate
+php artisan make:model HistoryPlate
+clear
+php route:list
+php artisan route:list
+cls
+clear
+php artisan make:controller HistoryPlateController --resource
+php artisan route:list
+exit

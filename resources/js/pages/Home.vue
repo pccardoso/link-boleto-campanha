@@ -221,6 +221,7 @@ import ModalUploadRash from '@/components/ModalUploadRash.vue';
 import Swal from 'sweetalert2';
 import { getAllAuthorized } from '@/api/authorized';
 import { getAllBill } from '@/api/bill';
+import { validatePlate } from '@/api/history';
 
 export default {
   name: "Home",
@@ -409,6 +410,9 @@ export default {
         const validateBoletoGerado = this.billList.find(bol => bol.plate === vehicle.plate);
 
         if (validateBoletoGerado) {
+
+          const responseValidatePlate = await validatePlate(vehicle.plate);
+          console.log(responseValidatePlate);
 
           if(validateBoletoGerado.descricao_situacao_boleto === "BAIXADO"){
             window.location.href = 'https://evoboletos.mundoevogard.com/';
