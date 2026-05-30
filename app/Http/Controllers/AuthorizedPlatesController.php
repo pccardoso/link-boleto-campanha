@@ -30,6 +30,23 @@ class AuthorizedPlatesController extends Controller
 
     }
 
+    public function history(){
+        $list = AuthorizedPlates::with('history')->get();
+
+        if($list){
+            return response()->json([
+                'message' => 'Authorized plates found',
+                'data' => $list,
+                'status' => 200
+            ], 200);
+        }else{
+            return response()->json([
+                'message' => 'No authorized plates found',
+                'status' => 404
+            ], 404);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      */

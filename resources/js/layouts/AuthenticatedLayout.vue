@@ -40,6 +40,11 @@
         <span>Usuários</span>
         </Link>
 
+        <Link href="/plates" :class="navClass('/plates')" @click="menuOpen = false">
+        <i class="fa-solid fa-car w-5"></i>
+        <span>Placas</span>
+        </Link>
+
       </nav>
 
       <!-- FOOTER -->

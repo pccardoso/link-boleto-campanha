@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\HistoryPlate;
 
 class AuthorizedPlates extends Model
 {
@@ -23,5 +24,9 @@ class AuthorizedPlates extends Model
         'fixed_value',
         'agreement_value'
     ];
+
+    public function history(){
+        return $this->hasMany(HistoryPlate::class, 'authorized_plate_id', 'id');
+    }
 
 }

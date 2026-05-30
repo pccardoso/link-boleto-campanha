@@ -39,6 +39,18 @@
         <Bar v-if="chartDataBar" :data="chartDataBar" :options="chartOptionsBar" />
       </div>
 
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-sm font-semibold text-gray-500 mb-3">
+            Históricos de Eventos por mês (ano atual)
+        </h2>
+
+        <Bar
+            v-if="chartDataHistoryPlate"
+            :data="chartDataHistoryPlate"
+            :options="chartOptionsBar"
+        />
+      </div>
+
       
 
     </div>
@@ -90,6 +102,7 @@ export default {
       chartDataBar: null,
       chartDataBills: null,
       chartDataValorBills: null, // novo gráfico
+      chartDataHistoryPlate: null, // novo gráfico
 
       chartOptionsLine: {
         responsive: true,
@@ -157,7 +170,8 @@ export default {
       this.loadHashesMes(),
       this.loadHashesUploadMes(),
       this.loadBillsMes(),
-      this.loadValorBillsMes() // carregando novo gráfico
+      this.loadValorBillsMes(),
+      this.loadHistoryPlateMes() // carregando novo gráfico
     ])
   },
 
@@ -196,6 +210,28 @@ export default {
           }
         ]
       }
+    },
+
+    async loadHistoryPlateMes() {
+        const response = await axios.get(
+            "/dashboard/history-plate"
+        );
+
+        this.chartDataHistoryPlate = {
+            labels: response.data.labels,
+            datasets: [
+                {
+                    label: response.data.series[0].name,
+                    data: response.data.series[0].data,
+                    backgroundColor: "#ED6B1E"
+                },
+                {
+                    label: response.data.series[1].name,
+                    data: response.data.series[1].data,
+                    backgroundColor: "#F4945C"
+                }
+            ]
+        };
     },
 
     async loadBillsMes() {

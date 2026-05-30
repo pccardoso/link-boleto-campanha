@@ -9,6 +9,7 @@ use App\Http\Controllers\UploadHashController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\AuthorizedPlatesController;
+use App\Http\Controllers\HistoryPlateController;
 
 # ROTAS PÚBLICAS
 
@@ -62,6 +63,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/hashes-mes-upload', [HashPlateController::class, 'hashesPorMesComUpload']);
         Route::get('/bills-mes', [BillController::class, 'billsPorMes']);
         Route::get('/valor-bills-mes', [BillController::class, 'valorPorMes']);
+        Route::get('/history-plate', [HistoryPlateController::class, 'historyPlateByMonth']);
+
 
     });
 
@@ -92,7 +95,15 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/all', [BillController::class, 'index'])->name('bills.all');
 
-    }); 
+    });
+
+    Route::prefix('plates')->group(function () {
+
+        Route::get('/', function () {
+            return Inertia::render('authorized/Authorized');
+        })->name('plates.index');
+
+    });
 
     Route::post('/logout', [UserController::class, 'logout'])->name('user.logout');
 

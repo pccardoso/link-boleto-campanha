@@ -13,3 +13,17 @@ export const getAllAuthorized = async () =>  {
     }
 
 }
+
+export const getAllAuthorizedWithHistory = async () =>  {
+
+    try{
+
+        const response = await axios.get('/api/authorized-with-history');
+        return response.data;
+
+    }catch(error){
+        throw error;
+        
+    }
+
+}
