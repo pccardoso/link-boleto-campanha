@@ -317,6 +317,35 @@
                     
                 ]);
 
+                $body = [
+                    "codigo_associado" => data_get($payload, 'codigo_associado', 0),
+                    "codigo_tipo_boleto" => $state === "CE" ? 82 : 38,
+                    "codigo_conta" => $state === "CE" ? 7 : 1,
+                    "link_boleto" => true,
+                    "codigo_situacao" => "2",
+                    "array_parcela" => [
+                        (object)[
+                            "valor" => $valorFinal,
+                            "vencimento" => $vencimentoBolet
+                        ]
+                    ],
+                    "mes_referente" => $mesReferencia,
+                    "data_emissao" => $hoje,
+                    "referencia" => [
+                        (object)[
+                            "modulo" => "veiculo",
+                            "codigo_modulo" => data_get($veiculos, '0.codigo_veiculo', 0),
+                        ]
+                    ]
+                ];
+
+                Log::info('Requisição para API de geração de boleto', [
+                    'endpoint' => 'https://api.hinova.com.br/api/sga/v2/boleto/cadastrar',
+                    'payload' => $body
+                ]);
+
+                
+
                 Log::info('Resposta da API de geração de boleto', [
                     'status' => $response->status(),
                     'body' => $response->body()
