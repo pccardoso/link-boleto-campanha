@@ -140,4 +140,9 @@ class SGAController extends Controller
     {
         //
     }
+
+
+    public function getPlate($plate, $state){
+        return response()->json($this->serviceSGA->getVehicle($plate, $state));
+    }
 }

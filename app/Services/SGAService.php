@@ -98,20 +98,20 @@
         public function listBoletoOfPlate($plateVehicle)
         {
 
-            $platAuthorized = AuthorizedPlates::where('plate_number', $plateVehicle)->first();
+            /*$platAuthorized = AuthorizedPlates::where('plate_number', $plateVehicle)->first();
 
             if(!$platAuthorized){
                 throw new HttpException(
                     422,
                     'Placa não autorizada para consulta de boletos.'
                 );
-            }
+            }*/
 
             //verificar se há boletos já cadastrados
 
-            $boletCurrent = Bill::where('plate', $plateVehicle)->get();
+            $boletCurrent = Bill::where('plate', strtoupper($plateVehicle))->get();
 
-            if($boletCurrent->count() > 0){
+            /*if($boletCurrent->count() > 0){
             
                 if($boletCurrent[0]->descricao_situacao_boleto === "ABERTO"){
                     HistoryPlate::create([
@@ -127,7 +127,7 @@
                     ]);
                 }
 
-            }
+            }*/
 
             $hoje = \Carbon\Carbon::today();
 
@@ -260,7 +260,34 @@
 
             try{
 
-                $place = AuthorizedPlates::where('plate_number', data_get($veiculos, '0.placa', 0))->first();
+                //$place = AuthorizedPlates::where('plate_number', data_get($veiculos, '0.placa', 0))->first();
+
+                $placeVehicle = data_get($veiculos, '0.placa', null);
+
+                $responseDataVehicle = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . env('TOKEN_SGA'),
+                    'Accept' => 'application/json',
+                ])->get("https://api.hinova.com.br/api/sga/v2/veiculo/buscar/".$placeVehicle);
+
+                $valorFixo = 0;
+                $valorFinal = 0;
+
+                if($responseDataVehicle->status() === 200 && $responseDataVehicle->json()){
+
+                    $place = $responseDataVehicle->json();
+
+                    $valorFixo = floatval($place[0]['valor_fixo'] );
+
+                    $valorFinal = match (true) {
+                        $valorFixo <= 100 => 50,
+                        $valorFixo <= 150 => 75,
+                        $valorFixo <= 200 => 100,
+                        $valorFixo <= 300 => 150,
+                        $valorFixo <= 450 => 200,
+                        default => 225,
+                    };
+
+                }
 
                 $tokenState = $state === "CE" ? env('TOKEN_SGA') : env('TOKEN_SGA_GO');
             
@@ -275,7 +302,7 @@
                     "codigo_situacao" => "2",
                     "array_parcela" => [
                         (object)[
-                            "valor" => $place->agreement_value,
+                            "valor" => $valorFinal,
                             "vencimento" => $vencimentoBolet
                         ]
                     ],
@@ -314,7 +341,7 @@
                             "associado" => data_get($payload, 'nome_associado', 'Não Identificado'),
                             "linha_digitavel" => $linhaDigitavel,
                             "link_boleto" => $linkBoleto,
-                            "valor_boleto" => $place->agreement_value,
+                            "valor_boleto" => $valorFinal,
                             "plate" => data_get($veiculos, '0.placa', 0)
                         ]
                     );
@@ -366,6 +393,39 @@
 
                 return response()->json([
                     'erro' => 'Não foi possível buscar o boleto.'
+                ], 500);
+
+            }
+
+        }
+
+        public function getVehicle($plate, $state){
+
+            try{
+                $tokenState = $state === "CE" ? env('TOKEN_SGA') : env('TOKEN_SGA_GO');
+
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $tokenState,
+                    'Accept' => 'application/json',
+                ])->get("https://api.hinova.com.br/api/sga/v2/veiculo/buscar/".$plate, []);
+
+                if($response->status() === 200){
+
+                    return $response->json();
+
+                }
+
+            }catch(\Exception $e){
+
+                Log::error('Erro ao buscar veiculo', [
+                    'parametro' => $plate,
+                    'mensagem' => $e->getMessage(),
+                    'linha' => $e->getLine(),
+                    'arquivo' => $e->getFile(),
+                ]);
+
+                return response()->json([
+                    'erro' => 'Não foi possível buscar o veiculo.'
                 ], 500);
 
             }

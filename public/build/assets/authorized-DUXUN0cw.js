@@ -1,1 +1,0 @@
-import{j as r}from"./app-DlSTZ2nT.js";const o=async()=>{try{return(await r.get("/authorized-plates")).data}catch(t){throw t}},a=async()=>{try{return(await r.get("/api/authorized-with-history")).data}catch(t){throw t}};export{a,o as g};

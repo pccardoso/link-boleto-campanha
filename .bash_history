@@ -341,3 +341,19 @@ clear
 php artisan make:controller HistoryPlateController --resource
 php artisan route:list
 exit
+cls
+php artisan optimize
+php artisan config:clear
+exit
+php artisan config:clear
+cl
+exit
+cls
+clear
+php artisan route:list
+php artisan optimize
+php artisan route:list
+exit
+php artisan config:clear
+php artisan config:clearexit
+exit

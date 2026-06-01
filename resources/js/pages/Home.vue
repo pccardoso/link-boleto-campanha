@@ -91,7 +91,7 @@
               v-if="tipoSelecionado === 'cpf'" />
 
             <BoletoListComponent v-if="viewBoletos" :boletos="pegarBoletoMaisAntigo" class="mb-4"
-              @actionUpdateMaturity="updateBolet" @actionLinkSurvey="openModalLink" />
+              @actionUpdateMaturity="updateBolet" @actionLinkSurvey="openModalLink" :state="stateToken" />
 
             <div class="flex gap-3">
 
@@ -365,9 +365,7 @@ export default {
 
           if (responsePlate.status === 200) {
 
-            this.veiculos = responsePlate.data.data.map(item => {
-              return this.authorizedVehicles.includes(item.plate) ? item : null
-            }).filter(Boolean);
+            this.veiculos = responsePlate.data.data;
 
             if (responseBoleto.status === 200) {
 
@@ -411,8 +409,8 @@ export default {
 
         if (validateBoletoGerado) {
 
-          const responseValidatePlate = await validatePlate(vehicle.plate);
-          console.log(responseValidatePlate);
+          /*const responseValidatePlate = await validatePlate(vehicle.plate);
+          console.log(responseValidatePlate);*/
 
           if(validateBoletoGerado.descricao_situacao_boleto === "BAIXADO"){
             window.location.href = 'https://evoboletos.mundoevogard.com/';

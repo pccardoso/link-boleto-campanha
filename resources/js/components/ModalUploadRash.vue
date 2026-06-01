@@ -41,7 +41,7 @@
           </div>
 
           <p class="text-xs text-neutral-600 text-center">
-            Esse código precisa aparecer no vídeo. Se tiver dúvidas, veja um exemplo de como gravar.
+            Este código precisa aparecer no vídeo. Você pode gravar mostrando a moto e também falando o código em voz alta durante a gravação. Se tiver dúvidas, consulte o vídeo de exemplo para ver como realizar a vistoria corretamente.
           </p>
 
         </div>

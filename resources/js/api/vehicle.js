@@ -51,3 +51,16 @@ export const updateBoleto = async (payload) => {
     }
     
 }
+
+export const getVehicle = async (plate, state) => {
+
+    try{
+        
+        const response = await axios.get(`api/get-plate/${plate}/${state}`);
+        return response;
+
+    }catch(error){
+        throw error;
+    }
+
+}

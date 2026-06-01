@@ -15,12 +15,13 @@
           </h2>
         </div>
 
+        <!--
         <button
           @click="$emit('close')"
           class="text-gray-400 hover:text-gray-600 transition"
         >
           <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
+        </button>-->
 
       </div>
 
