@@ -265,7 +265,7 @@
                 $placeVehicle = data_get($veiculos, '0.placa', null);
 
                 $responseDataVehicle = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . env('TOKEN_SGA'),
+                    'Authorization' => 'Bearer ' . $state === "CE" ? env('TOKEN_SGA') : env('TOKEN_SGA_GO'),
                     'Accept' => 'application/json',
                 ])->get("https://api.hinova.com.br/api/sga/v2/veiculo/buscar/".$placeVehicle);
 
