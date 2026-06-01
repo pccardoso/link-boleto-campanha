@@ -296,8 +296,8 @@
                     'Accept' => 'application/json'
                 ])->post('https://api.hinova.com.br/api/sga/v2/boleto/cadastrar', [
                     "codigo_associado" => data_get($payload, 'codigo_associado', 0),
-                    "codigo_tipo_boleto" => 82,
-                    "codigo_conta" => 7,
+                    "codigo_tipo_boleto" => $state === "CE" ? 82 : 38,
+                    "codigo_conta" => $state === "CE" ? 7 : 1 ,
                     "link_boleto" => true,
                     "codigo_situacao" => "2",
                     "array_parcela" => [
