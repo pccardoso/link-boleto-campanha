@@ -357,3 +357,10 @@ exit
 php artisan config:clear
 php artisan config:clearexit
 exit
+cls
+clear
+php artisan migrate
+php artisan migrate
+cls
+clear
+exit

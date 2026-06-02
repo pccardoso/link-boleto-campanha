@@ -34,7 +34,10 @@ class ValidateBillStatusJob implements ShouldQueue
         Log::info("Validando boleto {$this->bill->nosso_numero}");
 
         try {
-            $response = $sgaService->getBolet($this->bill->nosso_numero);
+
+            $stateToken = $this->bill->state;
+
+            $response = $sgaService->getBolet($this->bill->nosso_numero, $stateToken);
 
             $status = data_get($response, 'descricao_situacao_boleto');
             $codigo = data_get($response, 'codigo_situacao_boleto');

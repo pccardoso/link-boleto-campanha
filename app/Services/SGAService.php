@@ -260,6 +260,7 @@
 
             try{
 
+                //removido lógica de validar as placas autorizadas
                 //$place = AuthorizedPlates::where('plate_number', data_get($veiculos, '0.placa', 0))->first();
 
                 $placeVehicle = data_get($veiculos, '0.placa', null);
@@ -373,7 +374,8 @@
                             "linha_digitavel" => $linhaDigitavel,
                             "link_boleto" => $linkBoleto,
                             "valor_boleto" => $valorFinal,
-                            "plate" => data_get($veiculos, '0.placa', 0)
+                            "plate" => data_get($veiculos, '0.placa', 0),
+                            "state" => $state
                         ]
                     );
 
@@ -399,11 +401,14 @@
 
         }
 
-        public function getBolet($nosso_numero){
+        public function getBolet($nosso_numero, string $state){
 
             try{
+
+                $tokenState = $state === "CE" ? env('TOKEN_SGA') : env('TOKEN_SGA_GO');
+
                 $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . env('TOKEN_SGA'),
+                    'Authorization' => 'Bearer ' . $tokenState,
                     'Accept' => 'application/json',
                 ])->get('https://api.hinova.com.br/api/sga/v2/buscar/boleto/'.$nosso_numero, []);
 
