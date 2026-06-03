@@ -144,8 +144,8 @@
                     'Accept' => 'application/json',
                 ])->post('https://api.hinova.com.br/api/sga/v2/listar/boleto-associado-veiculo', [
                     'placa' => $plateVehicle,
-                    "data_vencimento_original_inicial" => $hoje->copy()->subDays(140)->format('d/m/Y'),
-                    "data_vencimento_original_final"   => $hoje->copy()->addDays(60)->format('d/m/Y'),
+                    "data_vencimento_original_inicial" => $hoje->copy()->subDays(160)->format('d/m/Y'),
+                    "data_vencimento_original_final"   => $hoje->copy()->addDays(40)->format('d/m/Y'),
                 ]);
 
                 // ✅ sucesso
