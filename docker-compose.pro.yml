@@ -1,0 +1,69 @@
+version: "3.9"
+
+services:
+
+  app_campanha:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: boleto_app_campanha
+    working_dir: /var/www/link-boleto-campanha
+    volumes:
+      - ./:/var/www/link-boleto-campanha
+    depends_on:
+      - pgsql_campanha
+    networks:
+      - laravel
+      - web  # <--- Adicione a rede externa aqui
+
+  queue_campanha:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: boleto_queue_campanha
+    working_dir: /var/www/link-boleto-campanha
+    command: php artisan queue:work --tries=3 --timeout=60
+    volumes:
+      - ./:/var/www/link-boleto-campanha
+    depends_on:
+      - pgsql_campanha
+      - app_campanha
+    networks:
+      - laravel
+
+  scheduler_campanha:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: boleto_scheduler_campanha
+    working_dir: /var/www/link-boleto-campanha
+    command: php artisan schedule:work
+    volumes:
+      - ./:/var/www/link-boleto-campanha
+    depends_on:
+      - app_campanha
+    networks:
+      - laravel
+
+  pgsql_campanha:
+    image: postgres:16
+    container_name: boleto_pgsql_campanha
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: laravel
+      POSTGRES_USER: laravel
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - laravel
+
+volumes:
+  pgdata:
+
+networks:
+  laravel:
+  web:
+    external: true
