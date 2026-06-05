@@ -135,8 +135,14 @@ export default {
         this.boletos?.[0]?.veiculo?.[0]?.placa ??
         '';
 
-      if (placa) {
-        const response = await getVehicle(placa, this.state);
+      const chassi = this.boletos?.[0]?.veiculos?.[0]?.chassi ??
+        this.boletos?.[0]?.veiculo?.[0]?.chassi ??
+        '';
+
+      console.log(placa, chassi, placa || chassi);
+
+      if (placa || chassi) {
+        const response = await getVehicle(placa || chassi, this.state);
         const responseData = response.data;
 
         const valorFixo = responseData[0].valor_fixo;
