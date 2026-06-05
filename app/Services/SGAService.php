@@ -265,13 +265,17 @@
                 //$place = AuthorizedPlates::where('plate_number', data_get($veiculos, '0.placa', 0))->first();
 
                 $placeVehicle = data_get($veiculos, '0.placa', null);
+                $chassiVehicle = data_get($veiculos, '0.chassi', null);
 
                 $tokenState = $state === "CE" ? env('TOKEN_SGA') : env('TOKEN_SGA_GO');
 
                 $responseDataVehicle = Http::withHeaders([
                     'Authorization' => 'Bearer ' . $tokenState,
                     'Accept' => 'application/json',
-                ])->get("https://api.hinova.com.br/api/sga/v2/veiculo/buscar/".$placeVehicle);
+                ])->get(
+                    "https://api.hinova.com.br/api/sga/v2/veiculo/buscar/" .
+                    ($placeVehicle ? $placeVehicle : $chassiVehicle)
+                );
 
                 $valorFixo = 0;
                 $valorFinal = 0;
