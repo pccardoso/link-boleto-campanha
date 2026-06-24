@@ -219,7 +219,10 @@
                             "linha_digitavel" => data_get($codigoBolet, 'linha_digitavel', 'Não Identificado'),
                             "link_boleto" => data_get($codigoBolet, 'link_boleto', 'Não Identificado'),
                             "valor_boleto" => floatval(data_get($codigoBolet, 'valor_boleto', 0)),
-                            "plate" => $plateVehicle
+                            "plate" => $plateVehicle,
+                            'vencimento_original' => Carbon::parse(
+                                data_get($codigoBolet, 'data_vencimento_original', '2022-01-01')
+                            )->format('d/m/Y'),
                         ]
                     );
 

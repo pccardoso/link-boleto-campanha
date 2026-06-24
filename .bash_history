@@ -364,3 +364,8 @@ php artisan migrate
 cls
 clear
 exit
+clear
+clear
+ls
+php artisan migrate
+exit
