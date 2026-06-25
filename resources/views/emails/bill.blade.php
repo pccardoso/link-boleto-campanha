@@ -74,7 +74,7 @@
                         <th style="padding:12px; border:1px solid #e5e7eb;">Placa</th>
                         <th style="padding:12px; border:1px solid #e5e7eb;">CPF/CNPJ</th>
                         <th style="padding:12px; border:1px solid #e5e7eb;">Valor Pago</th>
-                        <th style="padding:12px; border:1px solid #e5e7eb;">Vencimento Orifinal</th>
+                        <th style="padding:12px; border:1px solid #e5e7eb;">Vencimento Original</th>
                         <th style="padding:12px; border:1px solid #e5e7eb;">Data Pagamento</th>
                         <th style="padding:12px; border:1px solid #e5e7eb;">Status</th>
                     </tr>
