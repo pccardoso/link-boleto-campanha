@@ -67,7 +67,7 @@
             <div style="background:#fff7ed; border:1px solid #fdba74; border-radius:10px; padding:14px 18px; margin-bottom:25px;">
                 <p style="margin:0; font-size:14px; color:#92400e; line-height:1.5;">
                     <strong>Aviso:</strong>
-                    o campo <strong>Vencimento Original</strong> só estará preenchido para boletos emitidos a partir do dia <strong>25/06/2026</strong>. Boletos gerados antes dessa data não possuirão essa informação.
+                    o campo <strong>Vencimento Original</strong> só estará preenchido para boletos emitidos a partir do dia <strong>25/06/2026</strong>
                 </p>
             </div>
 
