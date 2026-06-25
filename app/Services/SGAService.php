@@ -222,7 +222,7 @@
                             "plate" => $plateVehicle,
                             'vencimento_original' => Carbon::parse(
                                 data_get($codigoBolet, 'data_vencimento_original', '2022-01-01')
-                            )->format('d/m/Y'),
+                            )->format('d/m/Y')
                         ]
                     );
 
@@ -383,7 +383,10 @@
                             "link_boleto" => $linkBoleto,
                             "valor_boleto" => $valorFinal,
                             "plate" => data_get($veiculos, '0.placa', 0),
-                            "state" => $state
+                            "state" => $state,
+                            'vencimento_original' => Carbon::parse(
+                                data_get($payload, 'data_vencimento_original', '2022-01-01')
+                            )->format('d/m/Y'),
                         ]
                     );
 
